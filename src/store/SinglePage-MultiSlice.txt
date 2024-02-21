@@ -1,0 +1,104 @@
+// import { legacy_createStore as createStore } from "redux";
+
+import {createSlice, configureStore} from '@reduxjs/toolkit'
+
+const listSlice = createSlice({
+    name: 'list',
+    initialState: {
+        list: ["pen"],
+        newList: []
+    },
+    reducers: {
+        addToList : (state,action)=> {
+            state.list = [...state.list, action.payload];
+            state.newList = [...state.newList];
+        },
+        addToCart : (state,action)=> {
+            let val = state.list.splice(action.payload,1);
+            let value = val[0];
+            state.list = [...state.list];
+            state.newList = [...state.newList, value];
+        },
+        cancelHandler : (state,action)=> {
+            let val = state.newList.splice(action.payload,1);
+            let value = val[0];
+            state.list = [...state.list, value];
+            state.newList = [...state.newList];
+        },
+        buyHandler : (state,action)=> {
+            state.newList.splice(action.payload,1);
+            state.list = [...state.list];
+            state.newList = [...state.newList];
+        }
+    }
+});
+
+const buyListSlice = createSlice({
+    name: 'buyList',
+    initialState: {
+        buyList: []
+    },
+    reducers : {
+        buyListHandler : (state,action)=> {
+            state.buyList = [...state.buyList,action.payload];
+        }
+    }
+})
+
+const store = configureStore({
+    reducer: {list: listSlice.reducer, buyList: buyListSlice.reducer}
+});
+
+export const listActions = listSlice.actions;
+export const buyListActions = buyListSlice.actions;
+
+export default store;
+
+// const counterReducer = (state= {list:[], newList:[]},action)=>{
+//     if(action.type === "addToList"){
+//         return(
+//             {
+//                 list: [...state.list, action.value] , 
+//                 newList: [...state.newList]
+//             }
+//         )
+//     }
+
+//     if(action.type === "addToCart"){
+//         let val = state.list.splice(action.index,1)
+//         let value = val[0]
+//         return (
+//             {
+//                 list: [...state.list] , 
+//                 newList: [...state.newList, value]
+//             }
+//         )
+//     }
+
+//     if(action.type === "cancelHandler"){
+//         let val = state.newList.splice(action.index,1)
+//         let value = val[0]
+//         return (
+//             {
+//                 list: [...state.list, value] , 
+//                 newList: [...state.newList]
+//             }
+//         )
+//     }
+
+//     if(action.type === "buyHandler"){
+//         state.newList.splice(action.index,1)
+//         return (
+//             {
+//                 list: [...state.list],
+//                 newList: [...state.newList]
+//             }
+//         )
+//     }
+
+//     return state
+// }
+
+
+// const store = createStore(counterReducer)
+// export default store
